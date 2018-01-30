@@ -16,7 +16,7 @@ public:
     void removeStream( int streamId );
 
     void addData( int streamId, std::shared_ptr<SourceBlock> sb );
-    void addData( int streamId, uint8_t* buffer, int bufferSize );
+    void addData( int streamId, const void* buffer, int bufferSize );
 
     bool hasEncodedBlocks();
     std::shared_ptr< CodeBlock > getEncodedBlock();

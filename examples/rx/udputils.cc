@@ -1,4 +1,4 @@
-
+#ifndef _WIN32
 #include "udputils.h"
 
 bool isMulticastAddress(const std::string &ipAddress)
@@ -41,3 +41,5 @@ std::string getNetworkInterfaceIP(const std::string &interfaceName)
     freeifaddrs(ifaddr);
     return ret;
 }
+
+#endif // _WIN32

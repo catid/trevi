@@ -6,7 +6,9 @@
 
 using namespace std;
 
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 void ReorderingBuffer::addBlock(uint32_t stream_idx, uint32_t global_idx, std::shared_ptr<SourceBlock> sb)
 {

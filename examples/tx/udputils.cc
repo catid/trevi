@@ -1,3 +1,4 @@
+#ifndef _WIN32
 
 #include "udputils.h"
 
@@ -41,3 +42,5 @@ std::string getNetworkInterfaceIP(const std::string &interfaceName)
     freeifaddrs(ifaddr);
     return ret;
 }
+
+#endif // _WIN32

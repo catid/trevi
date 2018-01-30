@@ -11,7 +11,7 @@
 using namespace std;
 
 // Constructor from payload
-CodeBlock::CodeBlock(uint16_t mtu, uint8_t *payloadBuffer, int payloadSize)
+CodeBlock::CodeBlock(uint16_t mtu, const void * payloadBuffer, int payloadSize)
 {
     initMemory( CODEBLOCK_HEADER_SIZE + mtu + CODEBLOCK_FOOTER_SIZE );
 
@@ -21,7 +21,7 @@ CodeBlock::CodeBlock(uint16_t mtu, uint8_t *payloadBuffer, int payloadSize)
     setMNE();
 }
 
-CodeBlock::CodeBlock(uint8_t *rawBuffer, int rawBufferSize)
+CodeBlock::CodeBlock(const void * rawBuffer, int rawBufferSize)
 {
     initMemory( rawBufferSize );
     memcpy( buffer_ptr(), rawBuffer, rawBufferSize );
@@ -159,8 +159,8 @@ std::shared_ptr<CodeBlock> CodeBlock::clone()
 void CodeBlock::XOR_payload(std::shared_ptr<CodeBlock> other)
 {
     int blockSize = max( payload_size(), other->payload_size() );
-    uint8_t tmpBuffer_A[ blockSize ];
-    uint8_t tmpBuffer_B[ blockSize ];
+    uint8_t* tmpBuffer_A = (uint8_t*)alloca(blockSize);
+    uint8_t* tmpBuffer_B = (uint8_t*)alloca(blockSize);
     memset( tmpBuffer_A, 0, blockSize );
     memset( tmpBuffer_B, 0, blockSize );
     memcpy( tmpBuffer_A, payload_ptr(), payload_size() );

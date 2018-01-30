@@ -147,8 +147,8 @@ std::shared_ptr<CodeBlock> StreamEncoder::createEncodedBlock(uint16_t degree)
         }
     }
 
-    uint8_t tmpBuffer_A[ maxBlockSize ];
-    uint8_t tmpBuffer_B[ maxBlockSize ];
+    uint8_t* tmpBuffer_A = (uint8_t*)alloca(maxBlockSize);
+    uint8_t* tmpBuffer_B = (uint8_t*)alloca(maxBlockSize);
     memset( tmpBuffer_A, 0, maxBlockSize );
 
     //    std::cout << "set:" << endl;

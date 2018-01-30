@@ -12,10 +12,10 @@ class CodeBlock : public DataBlock
 {
 public:
     // Constructor from payload
-    CodeBlock( uint16_t mtu, uint8_t * payloadBuffer, int payloadSize );
+    CodeBlock( uint16_t mtu, const void * payloadBuffer, int payloadSize );
 
     // Constructor from raw buffer
-    CodeBlock( uint8_t * rawBuffer, int rawBufferSize );
+    CodeBlock( const void * rawBuffer, int rawBufferSize );
 
     virtual ~CodeBlock();
 

@@ -1,26 +1,32 @@
-
 #include "udptransmitter.h"
-#include "udputils.h"
 
+#ifndef _WIN32
+#include "udputils.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#endif
 #include <cstring>
 
 #include <iostream>
 using namespace std;
 
 UDPTransmitter::UDPTransmitter(uint16_t port, std::string host, std::string multicastInterface )
-    :_host(host), _port(port), _multicastInterface( multicastInterface ), _fd(-1)
+    :_host(host), _port(port), _multicastInterface( multicastInterface )
 {
+#ifdef _WIN32
+    if (!_udpsock.Create() || !_udpsock.Bind(0))
+#else
     if (( _fd=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))==-1)
+#endif
     {
         cerr << "Failed to open UDP socket." << endl;
     }
 
+#ifndef _WIN32
     struct sockaddr_in groupSock;
     memset((char *) &groupSock, 0, sizeof(groupSock));
     groupSock.sin_family = AF_INET;
@@ -45,18 +51,21 @@ UDPTransmitter::UDPTransmitter(uint16_t port, std::string host, std::string mult
     {
 
     }
-
+#endif
 }
 
 UDPTransmitter::~UDPTransmitter()
 {
+#ifndef _WIN32
     if( _fd >= 0 ){
         close(_fd);
     }
+#endif
 }
 
 void UDPTransmitter::send(uint8_t *data, uint32_t data_len)
 {
+#ifndef _WIN32
     struct sockaddr_in groupSock;
 
     int s, i, slen=sizeof(groupSock);
@@ -76,4 +85,11 @@ void UDPTransmitter::send(uint8_t *data, uint32_t data_len)
     {
 
     }
+#else
+    cat::NetAddr addr;
+    if (addr.SetFromString(_host.c_str(), _port))
+    {
+        sendto(_udpsock.GetSocket(), (const char*)data, data_len, 0, (const sockaddr*)&addr._ip, sizeof(sockaddr));
+    }
+#endif
 }

@@ -54,7 +54,11 @@ void StreamDecoder::addCodeBlock(std::shared_ptr<CodeBlock> cb)
         _infPacketIdxCount++;
         if( _infPacketIdxCount > _decodingWindowSize )
         {
+#ifdef _WIN32
+            ::_sleep(1000);
+#else
             sleep(1);
+#endif
             _curMinSeqIdx = minSeqIdx;
             _curMaxSeqIdx = minSeqIdx;
             _oge->reset();

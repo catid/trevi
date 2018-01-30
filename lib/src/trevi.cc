@@ -8,7 +8,9 @@
 
 using namespace std;
 
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 void trevi_init()
 {
@@ -55,7 +57,7 @@ int trevi_encode(trevi_encoder *encoder, int streamId, const void *buffer, int b
 }
 
 
-int trevi_encoder_get_encoded_data(trevi_encoder *encoder, const void *out_buffer)
+int trevi_encoder_get_encoded_data(trevi_encoder *encoder, void *out_buffer)
 {
      Encoder * enc = reinterpret_cast<Encoder*>(encoder->encoderRef);
 
@@ -109,7 +111,7 @@ int trevi_decode(trevi_decoder *decoder, const void *buffer, int bufferSize)
 }
 
 
-int trevi_decoder_get_decoded_data(trevi_decoder *decoder, const void *out_buffer, unsigned int * packetSeqIdx)
+int trevi_decoder_get_decoded_data(trevi_decoder *decoder, void *out_buffer, unsigned int * packetSeqIdx)
 {
     Decoder * dec = reinterpret_cast<Decoder*>(decoder->decoderRef);
     if( dec->available() )

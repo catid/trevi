@@ -1,3 +1,8 @@
+#ifdef _WIN32
+#define NOMINMAX /* Do not let windows.h stomp on std::max */
+#include "sockets.h"
+#endif
+
 #include <iostream>
 #include <trevi.h>
 
@@ -7,9 +12,13 @@
 #include "gilbertelliot.h"
 #include "cmdline.h"
 
+#if defined(_MSC_VER)
+#pragma comment(lib, "ws2_32.lib")
+#endif
+
 using namespace std;
 
-int generateRandomSourceBlock( uint8_t* buffer, int blockSize )
+static void generateRandomSourceBlock( uint8_t* buffer, int blockSize )
 {
     memset( (void*)buffer, 0, blockSize );
     for( int k = 0; k < blockSize; ++k )
@@ -20,7 +29,6 @@ int generateRandomSourceBlock( uint8_t* buffer, int blockSize )
 
 int main( int argc, char** argv )
 {
-
     cmdline::parser a;
 
     a.add<int>("encoding_window_size", 'e', "Encoding window size (must be inferior or equal to 32)", false, 32 );
@@ -46,7 +54,12 @@ int main( int argc, char** argv )
 
     GilbertElliot ge = GilbertElliot::fromBadProbabilityAndBurstLength( badStateProba, burstLength );
     cerr << "Gilbert-Elliot beta=" << ge.beta << " gamma=" << ge.gamma << endl;
+#ifdef _WIN32
+    ::Sleep(1000);
+    cat::Sockets::OnInitialize();
+#else
     sleep(1);
+#endif
 
     uint8_t buffer[ 2048 ];
 
@@ -59,8 +72,8 @@ int main( int argc, char** argv )
     double t_encode_sum = 0.0;
     double t_decode_sum = 0.0;
 
-    int encodeOpsCpt = 0.0;
-    int decodeOpsCpt = 0.0;
+    int encodeOpsCpt = 0;
+    int decodeOpsCpt = 0;
 
     int dataBlockSize = 1024;
     int numBenchmarkIter = 10000000;
@@ -132,7 +145,7 @@ int main( int argc, char** argv )
                 if( pktIdx != lastPktIdx + 1)
                 {
                     // Unrecovered packet detected.
-                    for( int k = 1; k < pktIdx - lastPktIdx; ++k )
+                    for( int k = 1; k < (int)pktIdx - lastPktIdx; ++k )
                     {
 #ifdef VERBOSE_OUTPUT
                         cerr << "# Definitly lost packet seqidx=" << lastPktIdx + k << endl;

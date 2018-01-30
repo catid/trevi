@@ -15,7 +15,7 @@ public:
     void addStream(int streamId, StreamDecoder* decoder);
     void removeStream( int streamId );
 
-    void addCodeBlock( uint8_t* buffer, int bufferSize );
+    void addCodeBlock( const void* buffer, int bufferSize );
     void addCodeBlock( std::shared_ptr<CodeBlock> cb );
 
     void onNewDecodeOutput( const DecodeOutput& deco );

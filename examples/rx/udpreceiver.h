@@ -2,6 +2,10 @@
 
 #include <string>
 
+#ifdef _WIN32
+#include "sockets.h"
+#endif
+
 class UDPReceiver
 {
 public:
@@ -12,7 +16,11 @@ public:
 
 private:
     int _timeout;
-    int _fd;
+#ifdef _WIN32
+    cat::UDPSocket _udpsock;
+#else
+    int _fd = -1;
+#endif
     uint16_t _port;
     std::string _address;
     std::string _networkInterface;

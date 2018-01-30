@@ -6,7 +6,7 @@ class SourceBlock : public DataBlock
 {
 public:
     // From payload
-    SourceBlock( uint8_t* payloadBuffer, int payloadSize );
+    SourceBlock( const void* payloadBuffer, int payloadSize );
 
     // From Raw Buffer
     SourceBlock( int bufferSize, uint8_t* rawBuffer );

@@ -11,8 +11,11 @@
 #include <sstream>
 #include <stack>
 #include <fstream>
+#include <iterator>
 
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #include <cstdint>
 
 using namespace std;
@@ -121,9 +124,10 @@ public:
 
 #ifdef USE_PROFILING
         $
-        #endif
-                int s = -1;
-        int componentSize = components.size();
+#endif
+
+        int s = -1;
+        int componentSize = (int)components.size();
         int component0 = components[0];
         int component0MinusOffset = components[0] - _curOffset;
 
@@ -133,7 +137,7 @@ public:
             return;
         }
 
-        int coeffsCompo0 = _coeffs[ components[0] - _curOffset ].size();
+        int coeffsCompo0 = (int)_coeffs[ components[0] - _curOffset ].size();
 #ifdef USE_LOG
         cerr << "components.size()=" << components.size() << " components[0] - _curOffset=" << components[0] - _curOffset <<" - _coeffs[ components[0] ].size()=" << _coeffs[ components[0] - _curOffset ].size() << endl;
 #endif
@@ -180,9 +184,9 @@ public:
 
 #ifdef USE_PROFILING
         $
-        #endif
+#endif
 
-                std::vector<uint32_t> newIndices;
+        std::vector<uint32_t> newIndices;
         std::vector<uint32_t> coeffs = _coeffs[s - _curOffset];
         int i = 0;
         int j = 0;
@@ -193,7 +197,7 @@ public:
             {
                 i++;
                 j++;
-            } else if( coeffs[i] < index )
+            } else if( (int)coeffs[i] < index )
             {
                 newIndices.push_back(coeffs[i]);
                 i++;
@@ -211,7 +215,6 @@ public:
         block->XOR_payload( _blocks[s - _curOffset] );
 
         return (indices.size() == 1);
-
     }
 
     int undeterminedCount()

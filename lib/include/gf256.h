@@ -50,7 +50,9 @@
 
 //------------------------------------------------------------------------------
 // Platform/Architecture
+#ifndef _WIN32
 #define LINUX_ARM
+#endif
 //#define HAVE_ARM_NEON_H
 
 #if defined(ANDROID) || defined(IOS) || defined(LINUX_ARM)

@@ -1,3 +1,8 @@
+#ifdef _WIN32
+#define NOMINMAX /* Do not let windows.h stomp on std::max */
+#include "sockets.h"
+#endif
+
 #include <iostream>
 #include <random>
 #include <chrono>
@@ -39,7 +44,12 @@ int main( int argc, char** argv )
     cerr << "UDP input port for input data: \t\t\t" << udpInputPort << endl;
     cerr << "UDP output for encoded data: \t\t\t" << udpOutputHost << ":" << udpOutputPort << endl;
     cerr << "Simulated channel loss probability: \t\t\t" << packetLossProba << endl;
+#ifdef _WIN32
+    ::Sleep(2000);
+    cat::Sockets::OnInitialize();
+#else
     sleep(2);
+#endif
 
     trevi_init();
 
@@ -62,7 +72,7 @@ int main( int argc, char** argv )
     for(;;)
     {
         int esize = 0;
-        int rsize = udpr.receive( buffer, 2048 );
+        int rsize = udpr.receive( buffer, 1400 );
         if( rsize > 0)
         {
             Timer t;

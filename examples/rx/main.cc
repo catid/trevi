@@ -1,3 +1,8 @@
+#ifdef _WIN32
+#define NOMINMAX /* Do not let windows.h stomp on std::max */
+#include "sockets.h"
+#endif
+
 #include <iostream>
 #include <trevi.h>
 
@@ -26,7 +31,12 @@ int main( int argc, char** argv )
     cerr << "Starting Trevi UDP decoder: " << endl;
     cerr << "UDP input port for encoded data: \t\t\t" << udpInputPort << endl;
     cerr << "UDP output for decoded data: \t\t\t" << udpOutputHost << ":" << udpOutputPort << endl;
+#ifdef _WIN32
+    ::Sleep(2000);
+    cat::Sockets::OnInitialize();
+#else
     sleep(2);
+#endif
 
     trevi_init();
 
@@ -46,7 +56,7 @@ int main( int argc, char** argv )
 
     for(;;)
     {
-        int rsize = udpr.receive( buffer, 2048 );
+        int rsize = udpr.receive( buffer, 1400 );
         if( rsize > 0)
         {
             // cerr << "rx size=" << rsize << endl;

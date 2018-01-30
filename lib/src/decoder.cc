@@ -27,7 +27,7 @@ void Decoder::removeStream(int streamId)
     }
 }
 
-void Decoder::addCodeBlock(uint8_t *buffer, int bufferSize)
+void Decoder::addCodeBlock(const void* buffer, int bufferSize)
 {
     std::shared_ptr<CodeBlock> cb = std::make_shared<CodeBlock>( buffer, bufferSize );
     addCodeBlock( cb );

@@ -1,5 +1,5 @@
-
 #include "udpreceiver.h"
+#ifndef _WIN32
 #include "udputils.h"
 
 #include <arpa/inet.h>
@@ -11,6 +11,7 @@
 #include <poll.h>
 
 #include <unistd.h>
+#endif
 #include <cstring>
 
 #include <iostream>
@@ -19,10 +20,14 @@ using namespace std;
 
 #undef USE_LOGGING
 
-UDPReceiver::UDPReceiver( uint16_t port, const std::string& networkInterface, const std::string& multicastGroup, int timeout )
-    :_address(multicastGroup), _port(port), _networkInterface(networkInterface), _fd(-1), _timeout(timeout)
+UDPReceiver::UDPReceiver( uint16_t port, std::string networkInterface, std::string multicastGroup, int timeout )
+    :_address(multicastGroup), _port(port), _networkInterface(networkInterface), _timeout(timeout)
 {
-    if (( _fd=socket(AF_INET, SOCK_DGRAM, 0))==-1)
+#ifdef _WIN32
+    if (_udpsock.Create())
+#else
+    if ((_fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
+#endif
     {
 #ifdef USE_LOGGING
         LOG_S(ERROR) << "Error opening datagram socket.";
@@ -30,6 +35,7 @@ UDPReceiver::UDPReceiver( uint16_t port, const std::string& networkInterface, co
     }
 
     {
+#ifndef _WIN32
         int reuse = 1;
         if(setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&reuse, sizeof(reuse)) < 0)
         {
@@ -44,7 +50,9 @@ UDPReceiver::UDPReceiver( uint16_t port, const std::string& networkInterface, co
             LOG_S(INFO) << "Setting SO_REUSEADDR...OK.";
 #endif
         }
+#endif
 
+#ifndef _WIN32
         /* Bind to the proper port number with the IP address */
         /* specified as INADDR_ANY. */
         struct sockaddr_in localSock;
@@ -53,11 +61,16 @@ UDPReceiver::UDPReceiver( uint16_t port, const std::string& networkInterface, co
         localSock.sin_port = htons(_port);
         localSock.sin_addr.s_addr = INADDR_ANY;
         if(bind(_fd, (struct sockaddr*)&localSock, sizeof(localSock)))
+#else
+        if (_udpsock.Bind(_port))
+#endif
         {
 #ifdef USE_LOGGING
             LOG_S(ERROR) << "Binding datagram socket ERROR";
 #endif
+#ifndef _WIN32
             close(_fd);
+#endif
         }
         else
         {
@@ -66,6 +79,7 @@ UDPReceiver::UDPReceiver( uint16_t port, const std::string& networkInterface, co
 #endif
         }
 
+#ifndef _WIN32
         // Joining multicast group if needed...
         if( isMulticastAddress( _address ) && _address.size() )
         {
@@ -104,6 +118,7 @@ UDPReceiver::UDPReceiver( uint16_t port, const std::string& networkInterface, co
         {
 
         }
+#endif
     }
 
 }
@@ -111,12 +126,15 @@ UDPReceiver::UDPReceiver( uint16_t port, const std::string& networkInterface, co
 UDPReceiver::~UDPReceiver()
 {
     cerr << "UDPReceiver::~UDPReceiver()" << endl;
+#ifndef _WIN32
     if( _fd >= 0 )
         close(_fd);
+#endif
 }
 
 int UDPReceiver::receive(uint8_t *buffer, uint32_t bufferSize)
 {
+#ifndef _WIN32
     char buf[ 2048 ];
     struct sockaddr_in si_other;
     int slen=sizeof(si_other);
@@ -128,4 +146,7 @@ int UDPReceiver::receive(uint8_t *buffer, uint32_t bufferSize)
         return rlen;
     }
     return -1;
+#else
+    return recv(_udpsock.GetSocket(), (char*)buffer, bufferSize, 0);
+#endif
 }

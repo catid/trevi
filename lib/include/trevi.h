@@ -74,7 +74,7 @@ int trevi_encode( trevi_encoder* encoder, int streamId, const void* buffer, int 
 /// \param out_buffer Pointer to the buffer to which output data will be written
 /// \return -1 if no encoded blocks are available, size of the written data otherwise
 ///
-int trevi_encoder_get_encoded_data( trevi_encoder* encoder, const void* out_buffer );
+int trevi_encoder_get_encoded_data( trevi_encoder* encoder, void* out_buffer );
 
 ///
 /// \brief trevi_create_decoder Create a new decoder
@@ -116,4 +116,4 @@ int trevi_decode( trevi_decoder* decoder, const void* buffer, int bufferSize );
 /// \param packetSeqIdx Pointer to an unsigned int, value will be modified to contain the sequence_number of the retrieve packet (so you can track unrecovered packets -ie. definitly lost-)
 /// \return Number of bytes written to out_buffer
 ///
-int trevi_decoder_get_decoded_data( trevi_decoder* decoder, const void* out_buffer, unsigned int* packetSeqIdx );
+int trevi_decoder_get_decoded_data( trevi_decoder* decoder, void* out_buffer, unsigned int* packetSeqIdx );

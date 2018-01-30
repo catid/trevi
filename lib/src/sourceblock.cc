@@ -9,7 +9,7 @@
 
 using namespace std;
 
-SourceBlock::SourceBlock(uint8_t *payloadBuffer, int payloadSize)
+SourceBlock::SourceBlock(const void* payloadBuffer, int payloadSize)
 {
     initMemory( payloadSize + SOURCEBLOCK_HEADER_SIZE + SOURCEBLOCK_FOOTER_SIZE );
     memcpy( payload_ptr(), payloadBuffer, payloadSize );

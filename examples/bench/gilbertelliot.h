@@ -9,12 +9,15 @@ public:
     GilbertElliot( double beta = 1.0, double gamma = 0.0 )
         :_goodState(true)
     {
-        generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+        generator.seed((unsigned)std::chrono::system_clock::now().time_since_epoch().count());
     }
 
     GilbertElliot( const GilbertElliot& other )
     {
-        *this = other;
+        beta = other.beta;
+        gamma = other.gamma;
+        _goodState = other._goodState;
+        generator = other.generator;
     }
 
     virtual ~GilbertElliot()

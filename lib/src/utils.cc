@@ -6,12 +6,16 @@
 
 #include <cstring>
 
+#ifdef _WIN32
+#include "sockets.h"
+#else
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <ifaddrs.h>
+#endif
 
 using namespace std;
 
@@ -58,9 +62,9 @@ uint32_t read32FromBuffer(void *ptr)
 {
     uint8_t* bufferPtr = (uint8_t*)ptr;
     uint32_t nValue = (((uint32_t) bufferPtr[0]) << 0 |
-                                                    ((uint32_t) bufferPtr[1]) << 8 |
-                                                                                 ((uint32_t) bufferPtr[2]) <<  16 |
-                                                                                                               ((uint32_t) bufferPtr[3]) <<  24);
+    ((uint32_t) bufferPtr[1]) << 8 |
+    ((uint32_t) bufferPtr[2]) <<  16 |
+    ((uint32_t) bufferPtr[3]) <<  24);
     return ntohl( nValue );
 }
 

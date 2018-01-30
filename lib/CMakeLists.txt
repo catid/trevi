@@ -3,8 +3,11 @@ project (LIBTREVI)
 
 # Set custom cmake scripts directory
 set( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${LIBNOVALINK_SOURCE_DIR}/cmake")
-SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread -fpermissive -flax-vector-conversions -Wcast-align" )
-SET( CMAKE_EXE_LINKER_FLAGS "-pthread")
+if(MSVC)
+else()
+	SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread -fpermissive -flax-vector-conversions -Wcast-align" )
+	SET( CMAKE_EXE_LINKER_FLAGS "-pthread")
+endif()
 
 # C99
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")

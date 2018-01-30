@@ -39,7 +39,7 @@ void Encoder::addData(int streamId, std::shared_ptr<SourceBlock> sb)
     }
 }
 
-void Encoder::addData(int streamId, uint8_t *buffer, int bufferSize)
+void Encoder::addData(int streamId, const void* buffer, int bufferSize)
 {
     std::shared_ptr< SourceBlock > sb = std::make_shared<SourceBlock>(buffer, bufferSize);
     return addData( streamId, sb );
