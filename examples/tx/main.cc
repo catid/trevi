@@ -72,7 +72,7 @@ int main( int argc, char** argv )
     for(;;)
     {
         int esize = 0;
-        int rsize = udpr.receive( buffer, 1400 );
+        int rsize = udpr.receive( buffer, 2048 );
         if( rsize > 0)
         {
             Timer t;
